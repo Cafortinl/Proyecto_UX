@@ -106,29 +106,31 @@ function NoteAdmin({username}) {
 
     function printFeed() {
         console.log('oi');
-        if(!showAll) {
-            var tagArr = searchTags.split(', ');
-            console.log(tagArr);
-            var tempArr = [];
-            for (let i = 0; i < noteList.length; i++) {
-                if (noteList[i].tags.some(tagArr) && !tempArr.includes(noteList[i])) {
-                    console.log('entro');
-                    tempArr.unshift(noteList[i]);
-                }
-            }
-
+        if(searchTags === '') {
             return (
-                tempArr.map((elem, i) => (
-                    <Notes index={i} {...elem} currentUser={username}/>    
+                noteList.map((elem, i) => (
+                    <Notes index={i} {...elem} currentUser={username}/>
                 ))
             );
         }
 
+        var tagArr = searchTags.split(', ');
+        console.log(tagArr);
+        var tempArr = [];
+        for (let i = 0; i < noteList.length; i++) {
+            if (list[i].tags.some(tag => tagArr.includes(tag)) && !tempArr.includes(list[i])) {
+                console.log('entro');
+                tempArr.unshift(noteList[i]);
+            }
+        
+        }
+
         return (
-            noteList.map((elem, i) => (
-                <Notes index={i} {...elem} currentUser={username}/>
+            tempArr.map((elem, i) => (
+                <Notes index={i} {...elem} currentUser={username}/>    
             ))
         );
+        
     }
 
     return (
@@ -155,12 +157,9 @@ function NoteAdmin({username}) {
 
             <div className="input-group">
             <div className="form-outline">
+            <label className="form-label" htmlFor="form4Example1">Tag search</label>
                 <input type="search" id="form1" className="form-control" placeholder='tag1, tag2, tag3, ...' value={searchTags} onChange={(e) => setSearchTags(e.target.value)}/>
             </div>
-            <button type="button" className="btn btn-secondary" onClick={() => setShowAll(false)}>
-                Search tags
-            </button>
-            <button type="button" className="btn btn-primary" onClick={() => setShowAll(true)}>Show all</button>
             </div>
 
             </div>
