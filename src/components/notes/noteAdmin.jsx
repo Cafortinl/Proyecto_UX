@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-//const noteList = JSON.parse(localStorage.getItem('noteList')) || [];
+var list = JSON.parse(localStorage.getItem('noteList')) || [];
 //let cont = noteList.length;
 
 function NoteAdmin({username}) {
@@ -11,7 +11,7 @@ function NoteAdmin({username}) {
 
     function addNote() {
         const date = new Date();
-        setNoteList([...noteList, {
+        list.push({
             createdBy: username, 
             name: noteName,
             content: noteContent, 
@@ -19,8 +19,8 @@ function NoteAdmin({username}) {
             tags: [], 
             likedBy: [], 
             dislikedBy: []
-        }]);
-        console.log(noteList);
+        });
+        setNoteList([...list]);
         localStorage.setItem('noteList', JSON.stringify(noteList));
         setNoteName('');
         setNoteContent('');
@@ -28,30 +28,35 @@ function NoteAdmin({username}) {
 
     function Notes({index, createdBy, name,content, date, tags, likedBy, dislikedBy, currentUser}) {
         function deleteNote() {
-            setNoteList([...noteList.splice(index, 1)]);
+            list.splice(index, 1);
+            setNoteList([...list]);
             localStorage.setItem('noteList', JSON.stringify(noteList));
         }
     
         function likeNote() {
-            if (noteList[index].likedBy.includes(currentUser)) {
-                noteList[index].likedBy.filter((item) => {return item !== currentUser});
+            if (list[index].likedBy.includes(currentUser)) {
+                list[index].likedBy = list[index].likedBy.filter((item) => {return item !== currentUser});
             } else {
-                if (noteList[index].dislikedBy.includes(currentUser)) {
-                    noteList[index].dislikedBy.filter((item) => {return item !== currentUser});
+                if (list[index].dislikedBy.includes(currentUser)) {
+                    list[index].dislikedBy = list[index].dislikedBy.filter((item) => {return item !== currentUser});
                 }
-                noteList[index].likedBy.push(currentUser);
+                list[index].likedBy.push(currentUser);
             }
+            setNoteList([...list]);
+            localStorage.setItem('noteList', JSON.stringify(noteList));
         }
     
         function dislikeNote() {
-            if (noteList[index].dislikedBy.includes(currentUser)) {
-                noteList[index].dislikedBy.filter((item) => {return item !== currentUser});
+            if (list[index].dislikedBy.includes(currentUser)) {
+                list[index].dislikedBy = list[index].dislikedBy.filter((item) => {return item !== currentUser});
             } else {
-                if (noteList[index].likedBy.includes(currentUser)) {
-                    noteList[index].likedBy.filter((item) => {return item !== currentUser});
+                if (list[index].likedBy.includes(currentUser)) {
+                    list[index].likedBy = list[index].likedBy.filter((item) => {return item !== currentUser});
                 }
-                noteList[index].dislikedBy.push(currentUser);
+                list[index].dislikedBy.push(currentUser);
             }
+            setNoteList([...list]);
+            localStorage.setItem('noteList', JSON.stringify(noteList));
         }
     
         if(createdBy === currentUser) {
