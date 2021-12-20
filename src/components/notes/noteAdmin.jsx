@@ -3,29 +3,33 @@ import React, { useState } from 'react';
 var list = JSON.parse(localStorage.getItem('noteList')) || [];
 
 function NoteAdmin({username}) {
-    const [noteName, setNoteName] = useState('');
     const [noteContent, setNoteContent] = useState('');
     const [tags, setTags] = useState([]);
-    const [noteList, setNoteList] = useState([...list]);
+    const [tagString, setTagString] = useState('');
+    const [noteList, setNoteList] = useState(list);
 
     function addNote() {
         const date = new Date();
+        setTags(tagString.split(', '));
         list.unshift({
-            createdBy: username, 
-            name: noteName,
+            createdBy: username,
             content: noteContent, 
             date: date.getFullYear().toString().substr(-2)+'/'+(date.getMonth()+1)+'/'+date.getDate() + ' ' + date.getHours()+':'+date.getMinutes()+':'+date.getSeconds(), 
-            tags: [], 
+            tags: tags, 
             likedBy: [], 
             dislikedBy: []
         });
-        setNoteList([...list]);
+        console.log(list);
+        setNoteList([]);
+        setNoteList(list);
         localStorage.setItem('noteList', JSON.stringify(noteList));
-        setNoteName('');
+        console.log(JSON.parse(localStorage.getItem('noteList')));
         setNoteContent('');
+        setTagString('');
+        setTags([]);
     }
 
-    function Notes({index, createdBy, name,content, date, tags, likedBy, dislikedBy, currentUser}) {
+    function Notes({index, createdBy,content, date, tags, likedBy, dislikedBy, currentUser}) {
         function deleteNote() {
             if(list.length > 1){
                 list.splice(index, 1);
@@ -70,10 +74,10 @@ function NoteAdmin({username}) {
                 <div className="card">
                 <h5 className="card-header">Note by {createdBy} on {date}</h5>
                 <div className="card-body">
-                    <h5 className="card-title">{name}</h5>
                     <p className="card-text">
                     {content}
                     </p>
+                    <p>Tags: {JSON.stringify(tags)}</p>
                     <a href="#" className="btn btn-primary" onClick={likeNote}>{likedBy.length} 👍</a>
                     <a href="#" className="btn btn-warning" onClick={dislikeNote}>{dislikedBy.length} 👎</a>
                     <a href="#" className="btn btn-danger" onClick={deleteNote}>Delete note 🗑️</a>
@@ -88,10 +92,10 @@ function NoteAdmin({username}) {
             <div className="card">
             <h5 className="card-header">Note by {createdBy} on {date}</h5>
             <div className="card-body">
-                <h5 className="card-title">{name}</h5>
                 <p className="card-text">
                 {content}
                 </p>
+                <p>Tags: {JSON.stringify(tags)}</p>
                 <a href="#" className="btn btn-primary" onClick={likeNote}>{likedBy.length} 👍</a>
                 <a href="#" className="btn btn-warning" onClick={dislikeNote}>{dislikedBy.length} 👎</a>
             </div>
@@ -106,14 +110,15 @@ function NoteAdmin({username}) {
             <form>
             <h5>Create a note</h5>
             <br/>
-            <div className="form-outline mb-4">
-                <input type="text" id="form4Example1" className="form-control" value={noteName} onChange={(e) => setNoteName(e.target.value)}/>
-                <label className="form-label" htmlFor="form4Example1">Title</label>
-            </div>
 
             <div className="form-outline mb-4">
                 <textarea className="form-control" id="form4Example3" rows="4" value={noteContent} onChange={(e) => setNoteContent(e.target.value)}></textarea>
                 <label className="form-label" htmlFor="form4Example3">Note</label>
+            </div>
+
+            <div className="form-outline mb-4">
+                <input type="text" id="form4Example1" className="form-control" value={tagString} onChange={(e) => setTagString(e.target.value)} placeholder='tag1, tag2, tag3, ...'/>
+                <label className="form-label" htmlFor="form4Example1">Tags</label>
             </div>
 
             <button type="submit" className="btn btn-primary btn-block mb-4" onClick={addNote}>Publish</button>
