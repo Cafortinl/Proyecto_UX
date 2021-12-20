@@ -105,7 +105,6 @@ function NoteAdmin({username}) {
     }
 
     function printFeed() {
-        console.log('oi');
         if(searchTags === '') {
             return (
                 noteList.map((elem, i) => (
@@ -115,11 +114,9 @@ function NoteAdmin({username}) {
         }
 
         var tagArr = searchTags.split(', ');
-        console.log(tagArr);
         var tempArr = [];
         for (let i = 0; i < noteList.length; i++) {
             if (list[i].tags.some(tag => tagArr.includes(tag)) && !tempArr.includes(list[i])) {
-                console.log('entro');
                 tempArr.unshift(noteList[i]);
             }
         
