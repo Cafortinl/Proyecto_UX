@@ -16,21 +16,18 @@ const firebaseConfig = {
 };
 
 function FirebaseInitializedApp() {
-  const firestoreInstance = getFirestore(useFirebaseApp());
   const firebaseAuth = getAuth(useFirebaseApp());
 
   return (
-    <FirestoreProvider sdk={firestoreInstance}>
-      <AuthProvider sdk={firebaseAuth}>
-        <App />
-      </AuthProvider>
-    </FirestoreProvider>
+    <AuthProvider sdk={firebaseAuth}>
+      <App />
+    </AuthProvider>
   );
 }
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+  <FirebaseAppProvider firebaseConfig={firebaseConfig}>
+    <FirebaseInitializedApp />
+  </FirebaseAppProvider>,
   document.getElementById('root')
 );

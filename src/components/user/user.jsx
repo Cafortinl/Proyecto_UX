@@ -3,6 +3,7 @@ import {getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } fr
 import {useUser,} from 'reactfire';
 import '../navbar/navbar.jsx';
 import Navbar from '../navbar/navbar.jsx';
+import NoteAdmin from '../notes/noteAdmin.jsx';
 
 function User() {
     const { status, data: user } = useUser();
@@ -70,7 +71,7 @@ function User() {
             <div>
                 <Navbar auth={auth}/>
                 <br/>
-                <PostController username={user.email} />
+                <NoteAdmin username={user.email} />
             </div>
         );
     }
