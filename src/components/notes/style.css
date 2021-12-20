@@ -1,0 +1,9 @@
+.mainDiv {
+    text-align: left;
+}
+
+.centeredDiv{
+    text-align: center;
+    align-items: center;
+    align-content: center;
+}

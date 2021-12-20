@@ -1,32 +1,32 @@
 import React, { useState } from 'react';
+import './style.css';
 
 var list = JSON.parse(localStorage.getItem('noteList')) || [];
 
 function NoteAdmin({username}) {
     const [noteContent, setNoteContent] = useState('');
-    const [tags, setTags] = useState([]);
     const [tagString, setTagString] = useState('');
     const [noteList, setNoteList] = useState(list);
+    const [searchTags, setSearchTags] = useState('');
+    const [showAll, setShowAll] = useState(true);
 
     function addNote() {
         const date = new Date();
-        setTags(tagString.split(', '));
+        console.log(tagString);
+        const tempArr = tagString.split(', ');
         list.unshift({
             createdBy: username,
             content: noteContent, 
             date: date.getFullYear().toString().substr(-2)+'/'+(date.getMonth()+1)+'/'+date.getDate() + ' ' + date.getHours()+':'+date.getMinutes()+':'+date.getSeconds(), 
-            tags: tags, 
+            tags: tempArr, 
             likedBy: [], 
             dislikedBy: []
         });
-        console.log(list);
         setNoteList([]);
         setNoteList(list);
         localStorage.setItem('noteList', JSON.stringify(noteList));
-        console.log(JSON.parse(localStorage.getItem('noteList')));
         setNoteContent('');
         setTagString('');
-        setTags([]);
     }
 
     function Notes({index, createdBy,content, date, tags, likedBy, dislikedBy, currentUser}) {
@@ -77,7 +77,7 @@ function NoteAdmin({username}) {
                     <p className="card-text">
                     {content}
                     </p>
-                    <p>Tags: {JSON.stringify(tags)}</p>
+                    <p>Tags: {tags.toString()}</p>
                     <a href="#" className="btn btn-primary" onClick={likeNote}>{likedBy.length} 👍</a>
                     <a href="#" className="btn btn-warning" onClick={dislikeNote}>{dislikedBy.length} 👎</a>
                     <a href="#" className="btn btn-danger" onClick={deleteNote}>Delete note 🗑️</a>
@@ -95,7 +95,7 @@ function NoteAdmin({username}) {
                 <p className="card-text">
                 {content}
                 </p>
-                <p>Tags: {JSON.stringify(tags)}</p>
+                <p>Tags: {tags.toString()}</p>
                 <a href="#" className="btn btn-primary" onClick={likeNote}>{likedBy.length} 👍</a>
                 <a href="#" className="btn btn-warning" onClick={dislikeNote}>{dislikedBy.length} 👎</a>
             </div>
@@ -104,14 +104,41 @@ function NoteAdmin({username}) {
         );
     }
 
+    function printFeed() {
+        console.log('oi');
+        if(!showAll) {
+            var tagArr = searchTags.split(', ');
+            console.log(tagArr);
+            var tempArr = [];
+            for (let i = 0; i < noteList.length; i++) {
+                if (noteList[i].tags.some(tagArr) && !tempArr.includes(noteList[i])) {
+                    console.log('entro');
+                    tempArr.unshift(noteList[i]);
+                }
+            }
+
+            return (
+                tempArr.map((elem, i) => (
+                    <Notes index={i} {...elem} currentUser={username}/>    
+                ))
+            );
+        }
+
+        return (
+            noteList.map((elem, i) => (
+                <Notes index={i} {...elem} currentUser={username}/>
+            ))
+        );
+    }
+
     return (
         <div>
-            <div className="container py-3 h-100">
+            <div className="container py-2 h-100 mainDiv">
             <form>
             <h5>Create a note</h5>
             <br/>
 
-            <div className="form-outline mb-4">
+            <div className="form-outline mb-2">
                 <textarea className="form-control" id="form4Example3" rows="4" value={noteContent} onChange={(e) => setNoteContent(e.target.value)}></textarea>
                 <label className="form-label" htmlFor="form4Example3">Note</label>
             </div>
@@ -123,15 +150,26 @@ function NoteAdmin({username}) {
 
             <button type="submit" className="btn btn-primary btn-block mb-4" onClick={addNote}>Publish</button>
             </form>
+
+            <br/>
+
+            <div className="input-group">
+            <div className="form-outline">
+                <input type="search" id="form1" className="form-control" placeholder='tag1, tag2, tag3, ...' value={searchTags} onChange={(e) => setSearchTags(e.target.value)}/>
+            </div>
+            <button type="button" className="btn btn-secondary" onClick={() => setShowAll(false)}>
+                Search tags
+            </button>
+            <button type="button" className="btn btn-primary" onClick={() => setShowAll(true)}>Show all</button>
+            </div>
+
             </div>
             <br/>
-            
+
             <br/>
-            <div>
+            <div className="mainDiv">
                 {
-                    noteList.map((elem, i) => (
-                        <Notes index={i} {...elem} currentUser={username}/>
-                    ))
+                    printFeed()
                 }
             </div>
         </div>
