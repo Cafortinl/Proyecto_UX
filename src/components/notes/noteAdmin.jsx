@@ -10,7 +10,7 @@ function NoteAdmin({username}) {
 
     function addNote() {
         const date = new Date();
-        list.push({
+        list.unshift({
             createdBy: username, 
             name: noteName,
             content: noteContent, 
@@ -27,13 +27,14 @@ function NoteAdmin({username}) {
 
     function Notes({index, createdBy, name,content, date, tags, likedBy, dislikedBy, currentUser}) {
         function deleteNote() {
-            if(list.length > 1) {
+            if(list.length > 1){
                 list.splice(index, 1);
                 setNoteList([...list]);
                 localStorage.setItem('noteList', JSON.stringify(noteList));
             } else {
+                list = [];
+                setNoteList([...list]);
                 localStorage.removeItem('noteList');
-                setNoteList([]);
             }
         }
     
