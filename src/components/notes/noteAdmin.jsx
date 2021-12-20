@@ -123,8 +123,8 @@ function NoteAdmin({username}) {
         }
 
         return (
-            tempArr.map((elem, i) => (
-                <Notes index={i} {...elem} currentUser={username}/>    
+            tempArr.map((elem) => (
+                <Notes index={list.indexOf(elem)} {...elem} currentUser={username}/>    
             ))
         );
         
