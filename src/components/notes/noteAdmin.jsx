@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 
 var list = JSON.parse(localStorage.getItem('noteList')) || [];
-//let cont = noteList.length;
 
 function NoteAdmin({username}) {
     const [noteName, setNoteName] = useState('');
     const [noteContent, setNoteContent] = useState('');
     const [tags, setTags] = useState([]);
-    const [noteList, setNoteList] = useState(JSON.parse(localStorage.getItem('noteList')) || []);
+    const [noteList, setNoteList] = useState([...list]);
 
     function addNote() {
         const date = new Date();
@@ -15,7 +14,7 @@ function NoteAdmin({username}) {
             createdBy: username, 
             name: noteName,
             content: noteContent, 
-            date: date.getFullYear().toString().substr(-2)+'/'+(date.getMonth()+1)+'/'+date.getDate(), 
+            date: date.getFullYear().toString().substr(-2)+'/'+(date.getMonth()+1)+'/'+date.getDate() + ' ' + date.getHours()+':'+date.getMinutes()+':'+date.getSeconds(), 
             tags: [], 
             likedBy: [], 
             dislikedBy: []
@@ -28,9 +27,14 @@ function NoteAdmin({username}) {
 
     function Notes({index, createdBy, name,content, date, tags, likedBy, dislikedBy, currentUser}) {
         function deleteNote() {
-            list.splice(index, 1);
-            setNoteList([...list]);
-            localStorage.setItem('noteList', JSON.stringify(noteList));
+            if(list.length > 1) {
+                list.splice(index, 1);
+                setNoteList([...list]);
+                localStorage.setItem('noteList', JSON.stringify(noteList));
+            } else {
+                localStorage.removeItem('noteList');
+                setNoteList([]);
+            }
         }
     
         function likeNote() {
@@ -63,7 +67,7 @@ function NoteAdmin({username}) {
             return(
                 <div className="container py-3 h-100">
                 <div className="card">
-                <h5 className="card-header">Note by {createdBy} on {date} index: {index}</h5>
+                <h5 className="card-header">Note by {createdBy} on {date}</h5>
                 <div className="card-body">
                     <h5 className="card-title">{name}</h5>
                     <p className="card-text">
@@ -71,7 +75,7 @@ function NoteAdmin({username}) {
                     </p>
                     <a href="#" className="btn btn-primary" onClick={likeNote}>{likedBy.length} 👍</a>
                     <a href="#" className="btn btn-warning" onClick={dislikeNote}>{dislikedBy.length} 👎</a>
-                    <a href="#" className="btn btn-danger" onClick={deleteNote}>Delete post 🗑️</a>
+                    <a href="#" className="btn btn-danger" onClick={deleteNote}>Delete note 🗑️</a>
                 </div>
                 </div>
                 </div>
@@ -81,7 +85,7 @@ function NoteAdmin({username}) {
         return(
             <div className="container py-3 h-100">
             <div className="card">
-            <h5 className="card-header">Note by {createdBy} on {date} index: {index}</h5>
+            <h5 className="card-header">Note by {createdBy} on {date}</h5>
             <div className="card-body">
                 <h5 className="card-title">{name}</h5>
                 <p className="card-text">
@@ -108,7 +112,7 @@ function NoteAdmin({username}) {
 
             <div className="form-outline mb-4">
                 <textarea className="form-control" id="form4Example3" rows="4" value={noteContent} onChange={(e) => setNoteContent(e.target.value)}></textarea>
-                <label className="form-label" htmlFor="form4Example3">Post</label>
+                <label className="form-label" htmlFor="form4Example3">Note</label>
             </div>
 
             <button type="submit" className="btn btn-primary btn-block mb-4" onClick={addNote}>Publish</button>
